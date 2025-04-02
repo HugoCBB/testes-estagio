@@ -1,13 +1,13 @@
 import os
 import zipfile
 
+
 class Compactar:
     def __init__(self):
         self._zip_dir = os.path.join(os.path.dirname(__file__), "../../data/zip")
         self._pdf_dir = os.path.join(os.path.dirname(__file__), "../../data/pdf")
         self._csv_dir = os.path.join(os.path.dirname(__file__), "../../data/csv")
 
-    
     def CompactarZipPDF(self):
         try:
             os.makedirs(self._zip_dir, exist_ok=True)

@@ -1,0 +1,6 @@
+database:
+  name: "vaga-estagio"
+  user: "postgres"
+  password: "hugo00028922"
+  host: "localhost"
+  port: 5432

@@ -9,7 +9,7 @@ class ExtrairDados(Compactar):
         self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data/pdf/Anexo1.pdf"))
         self.tables = camelot.read_pdf(self.base_dir, pages="3-end", flavor="stream")
 
-
+    # INTERA PELO PDF E SALVA OS DADOS NA TABELA EM FORMATO CSV
     def SalvarCSV(self):
         if self.tables.n > 0:
             os.makedirs(self._csv_dir, exist_ok=True)

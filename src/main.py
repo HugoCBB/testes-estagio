@@ -1,6 +1,7 @@
 from Test1.scraper.scraper import PDF
+from Test3.main import OperadoraDespesa
 
-client = PDF("https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos")
-# client.ExtrairPDF()
-# client.BaixarPDF()
-client.CompactarZipCSV()
+
+client = OperadoraDespesa()
+client.ExtrairLinks()
+client.BaixarArquivos()
