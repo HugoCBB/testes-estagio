@@ -1,10 +1,16 @@
 import requests
+
 from Conversao.conversao import Compactar
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+
+import zipfile
+
 import os
+
 from time import sleep
 
 
@@ -17,6 +23,8 @@ class OperadoraDespesa(Compactar):
         
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         self.todosLink = []
+        
+
     
     def ExtrairLinks(self):
         for urls in self.url:
@@ -35,6 +43,9 @@ class OperadoraDespesa(Compactar):
                     self.todosLink.append(href)
         self.driver.quit()
 
+    """
+    BAIXA ARQUIVO EM .ZIP OU CSV, ALEM DE EXTRAIR OS ARQUIVOS .ZIP EM CSV
+    """
     def BaixarArquivos(self):
 
         for i, link in enumerate(self.todosLink):
@@ -42,7 +53,7 @@ class OperadoraDespesa(Compactar):
             os.makedirs(self._csv_dir, exist_ok=True)
             try:
                 if link.endswith(".zip"):
-                    zip_path = os.path.join(self._zip_dir, f"Arquivo{i}.zip")
+                    zip_path = os.path.join(self._zip_dir, f"Arquivo{i+1}.zip")
                     response = requests.get(link, stream=True)
                     
                     with open(zip_path, "wb") as arquivo:
@@ -50,7 +61,9 @@ class OperadoraDespesa(Compactar):
                             if chunk:
                                 arquivo.write(chunk)
                     print("Arquivo salvo")
+                    self.DescompactarZIP(zip_path, i)
                     
+                
                 if link.endswith(".csv"):
                     csv_path = os.path.join(self._csv_dir, f"Arquivo{i}.csv")
                     response = requests.get(link, stream=True)
@@ -63,3 +76,18 @@ class OperadoraDespesa(Compactar):
 
             except Exception as e:
                 print("error: ", e)
+
+    def DescompactarZIP(self, zip_path, i):
+        try:
+            with zipfile.ZipFile(zip_path, "r") as zip_ref:
+                zip_ref.extractall(self._csv_dir)
+                
+                for arquivo in os.listdir(self._csv_dir):
+                    if arquivo.endswith(".csv"):
+                        caminho_antigo = os.path.join(self._csv_dir, arquivo)
+                        caminho_novo = os.path.join(self._csv_dir, f"extraido_{arquivo}")
+                        os.rename(caminho_antigo, caminho_novo)
+                
+                print("Arquivo extraido")
+        except Exception as e:
+            print("error: ", e)
